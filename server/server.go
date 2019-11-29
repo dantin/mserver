@@ -10,6 +10,7 @@ import (
 	"syscall"
 	"time"
 
+	"github.com/dantin/mserver/pkg/logutil"
 	log "github.com/sirupsen/logrus"
 )
 
@@ -22,10 +23,15 @@ type Server struct {
 
 // NewServer creates a new instance of HTTP server.
 func NewServer(cfg *Config) *Server {
+	// init logger.
+	logutil.InitLogger(&cfg.Log)
+	showVersionInfo()
+
 	svr = &Server{
 		cfg: cfg,
 		server: &http.Server{
-			Addr:           cfg.ListenAddr,
+			Addr: cfg.ListenAddr,
+
 			ReadTimeout:    5 * time.Second,
 			WriteTimeout:   10 * time.Second,
 			IdleTimeout:    30 * time.Second,
